@@ -6,54 +6,52 @@
 	<style>
 		.kanban {
 			display: flex;
-			flex-direction: row;
+			/*justify-content: space-around;*/
 			align-items: stretch;
 			padding: 20px 0;
+			min-height: 400px;
 		}
 		.kanban>div {
 			width: 300px;
-  			padding: 0 5px;
+  			margin: 0 5px;
+  			padding: 5px 10px;
+  			display: flex;
+  			flex-direction: column;
+  			background: #DFDFDF;
+  			position: relative;
 		}
 		.kanban h2, h3 {
 			margin: 0 0 10px 0;
 		}
-		.kanban-col {
-			border: 1px dashed #ccc;
-			padding: 10px;
-		}
 		.kanban-card {
 			padding: 20px;
-			background: #ccc;
+			background: #EBDB5B;
 			margin-bottom: 10px;
+			position: relative;
+		}
+		.delete-cards, .add-cards {
+			display: block;
+			width: 16px;
+			height: 16px;
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			cursor: pointer;
+		}
+		.delete-cards {
+			background: url(images/delete-icon.png) no-repeat center center;
+			background-size: 15px auto;
+		}
+		.add-cards {
+			background: url(images/add-icon.png) no-repeat center center;
+			background-size: 15px auto;
 		}
 	</style>
 </head>
 <body>
-	<div id="kanban" class="kanban">
-    	
-    </div>
-    <!-- <div class="kanban">
-    	<div data-column-id="5">
-    		<h2>ToDo</h2>
-    		<div class="kanban-col">
-				<div data-card-id="5" class="kanban-card"><h3>Зробити домашку</h3></div>
-				<div data-card-id="5" class="kanban-card"><h3>Зробити домашку 2</h3></div>
-    		</div>
-    	</div>
-    	<div data-column-id="5">
-    		<h2>ToDo</h2>
-    		<div class="kanban-col">
-				<div data-card-id="5" class="kanban-card"><h3>Встановити Node.js</h3></div>
-    		</div>
-    	</div>
-    	<div data-column-id="5">
-    		<h2>ToDo</h2>
-    		<div class="kanban-col">
-				<div data-card-id="5" class="kanban-card">4</div>
-    		</div>
-    	</div>
-    </div> -->
-    <script src="dist/main.js"></script>
+	<div id="kanban" class="kanban"></div>
+    
+    <script src="main.js"></script>
   </body>
 </html>
 
