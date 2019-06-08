@@ -1,8 +1,7 @@
 node_modules
 
 **/dist
-_05-kanban
-_01-simple-js
+**/server
 
 # Log files
 npm-debug.log*
