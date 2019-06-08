@@ -1,100 +1,83 @@
 export function getCards() {
-	const cards = [
-	  {
-	    id: 15,
-	    title: 'Зробити домашку',
-	    column: 7,
-	  },
-	  {
-	    id: 9,
-	    title: 'Встановити Node.js',
-	    column: 8,
-	  },
-	  {
-	    id: 10,
-	    title: 'Покормить кошку',
-	    column: 5,
-	  },
-	  {
-	    id: 4,
-	    title: 'Полить цветы',
-	    column: 8,
-	  },
-	  {
-	    id: 11,
-	    title: 'Приготовить вкусняшку',
-	    column: 5,
-	  },
-	];
 
+  return fetch('/api/card')
+  .then(res => {
+    return res.ok ? res.json() : Promise.reject(res.statusText)
+  })
 
-	let localStorageCards = localStorage.getItem('cards');
-
-	if ( localStorageCards === null ) {
-		let serialObj = JSON.stringify(cards);
-		localStorage.setItem("cards", serialObj);
-	}
-
-	let returnObj = JSON.parse(localStorage.getItem("cards"))
-
-	//localStorage.removeItem("cards");
-
-	return returnObj;
 }
 
+export function drawCards(cardsId, cardsTitle, columnsId) {
 
-export function removeCard(e) {
-	if ( e.target.matches(".delete-cards") ) {
+	const parentColumn = document.querySelector(`div[data-column-id='${columnsId}']`);
 
-		let elementId = e.target.parentElement.dataset.cardId;
-		e.target.parentElement.remove();
-		
-		let cards = getCards();
+	const divCards = document.createElement("div");
+	const h3 = document.createElement("h3");
+	const deleteCardsIcon = document.createElement("span");
 
-		for ( let i=0; i<cards.length; i++ ) {
-			if (cards[i].id == elementId) {
-				cards.splice(i, 1)
-			}
-		}
-
-		let serialObj = JSON.stringify(cards);
-		localStorage.setItem("cards", serialObj);
-	}
-}
-
-
-export function addCard(e) {
-	if ( e.target.matches(".add-cards") ) {
-
-		let newCartTitle = prompt("Введите текст карточки");
-		if (newCartTitle && newCartTitle != null) {
-
-			const divCards = document.createElement("div");
-			const h3 = document.createElement("h3");
-			const deleteCardsIcon = document.createElement("span");
-
-			let newCardColumnId = e.target.parentElement.dataset.columnId;
-
-			deleteCardsIcon.classList.add('delete-cards');
-			divCards.classList.add('kanban-card');
+	h3.setAttribute('contenteditable','true');
+	deleteCardsIcon.classList.add('delete-cards');
+	divCards.setAttribute('data-card-id',cardsId);
+	divCards.classList.add('kanban-card');
+	
+	h3.append(cardsTitle);
+	divCards.append(h3);
+	divCards.append(deleteCardsIcon);
+	parentColumn.append(divCards);
 			
-			h3.append(newCartTitle);
-			divCards.append(h3);
-			divCards.append(deleteCardsIcon);
-			e.target.parentElement.append(divCards);
+}
 
+export function removeCard(elementId) {
 
-			let cards = getCards();
-			let newCardObj = {
-				id: Math.round(Math.random()*100),
-				title: newCartTitle,
-				column: newCardColumnId
-			}
-			cards.push(newCardObj);
+	fetch(`/api/card/${elementId}`,{
+      mode: 'cors',
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }})
+	.then(res => {return res.ok ? res.json() : Promise.reject(res.statusText)})
+	.then( removeCardFromUI(elementId) )
 
-			let serialObj = JSON.stringify(cards);
-			localStorage.setItem("cards", serialObj);
-		}
+}
 
+export function removeCardFromUI(elementId){
+	document.querySelector(`[data-card-id='${elementId}']`).remove();
+}
+
+export function addCard(columnId, cartTitle) {
+
+    let myBody = {
+	  "title": cartTitle,
+	  "columnId": columnId
 	}
+	fetch('/api/card',{
+      mode: 'cors',
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }, body: JSON.stringify(myBody) })
+	.then(res => { return res.ok ? res.json() : Promise.reject(res.statusText) })
+	.then(data => { drawCards(data.id, data.title, data.columnId); })
+
+}
+
+
+export function updateCard(cardId, cartTitle) {
+
+	let myBody = {
+	  "title": cartTitle,
+	}
+
+	fetch(`/api/card/${cardId}`, {
+      mode: 'cors',
+      method: 'PATCH',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }, body: JSON.stringify(myBody) })
+	.then(res => { return res.ok ? res.json() : Promise.reject(res.statusText) })
+	.then(data => {  })
+	
 }
